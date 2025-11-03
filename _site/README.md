@@ -1,1 +1,0 @@
-# aaaamo.github.io

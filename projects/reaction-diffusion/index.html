@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reaction-Diffusion System</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            background: #1a1a1a;
+        }
+
+        #canvas-container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: crosshair;
+        }
+
+        canvas {
+            display: block;
+        }
+
+        #controls {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            background: rgba(0, 0, 0, 0.85);
+            padding: 20px;
+            border-radius: 10px;
+            color: white;
+            max-width: 300px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .control-group {
+            margin-bottom: 15px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 12px;
+            color: #aaa;
+        }
+
+        input[type="range"] {
+            width: 100%;
+        }
+
+        input[type="file"] {
+            width: 100%;
+            margin-top: 5px;
+            font-size: 11px;
+        }
+
+        button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .value-display {
+            display: inline-block;
+            float: right;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        h3 {
+            margin-top: 0;
+            font-size: 16px;
+            border-bottom: 1px solid #444;
+            padding-bottom: 10px;
+        }
+
+        .preset-btn {
+            background: #2196F3;
+            margin-top: 2px;
+            padding: 8px;
+            font-size: 11px;
+        }
+
+        .preset-btn:hover {
+            background: #0b7dda;
+        }
+
+        .brush-size {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="canvas-container"></div>
+    <div id="controls">
+        <h3>Reaction-Diffusion Controls</h3>
+
+        <div class="control-group">
+            <label>Image Upload</label>
+            <input type="file" id="imageUpload" accept="image/*">
+        </div>
+
+        <div class="control-group">
+            <label>Feed Rate (f): <span class="value-display" id="feedValue">0.0550</span></label>
+            <input type="range" id="feed" min="0.01" max="0.1" step="0.0001" value="0.055">
+        </div>
+
+        <div class="control-group">
+            <label>Kill Rate (k): <span class="value-display" id="killValue">0.0620</span></label>
+            <input type="range" id="kill" min="0.045" max="0.07" step="0.0001" value="0.062">
+        </div>
+
+        <div class="control-group">
+            <label>Diffusion A (dA): <span class="value-display" id="diffAValue">1.0</span></label>
+            <input type="range" id="diffA" min="0.1" max="2.0" step="0.01" value="1.0">
+        </div>
+
+        <div class="control-group">
+            <label>Diffusion B (dB): <span class="value-display" id="diffBValue">0.5</span></label>
+            <input type="range" id="diffB" min="0.1" max="1.0" step="0.01" value="0.5">
+        </div>
+
+        <div class="control-group">
+            <label>Time Step (dt): <span class="value-display" id="timeStepValue">1.0</span></label>
+            <input type="range" id="timeStep" min="0.1" max="2.0" step="0.1" value="1.0">
+        </div>
+
+        <div class="control-group">
+            <label>Iterations/Frame: <span class="value-display" id="iterValue">20</span></label>
+            <input type="range" id="iterations" min="1" max="50" step="1" value="20">
+        </div>
+
+        <div class="control-group brush-size">
+            <label>Brush Size: <span class="value-display" id="brushValue">30</span></label>
+            <input type="range" id="brushSize" min="5" max="100" step="5" value="30">
+        </div>
+
+        <div class="control-group">
+            <label>
+                <input type="checkbox" id="invertColors"> Invert Black/White
+            </label>
+        </div>
+
+        <button id="reset">Reset Simulation</button>
+        <button id="clearDraw">Clear Drawing</button>
+
+        <h3 style="margin-top: 20px; font-size: 14px;">Presets</h3>
+        <button class="preset-btn" id="preset_spots">Spots (Mitosis)</button>
+        <button class="preset-btn" id="preset_stripes">Stripes (Coral)</button>
+        <button class="preset-btn" id="preset_waves">Waves (Moving)</button>
+        <button class="preset-btn" id="preset_spirals">Spirals</button>
+        <button class="preset-btn" id="preset_fingerprint">Fingerprint</button>
+        <button class="preset-btn" id="preset_bacteria">Bacteria Colonies</button>
+        <button class="preset-btn" id="preset_worms">Worms</button>
+        <button class="preset-btn" id="preset_zebrafish">Zebrafish</button>
+        <button class="preset-btn" id="preset_maze">Maze (Labyrinth)</button>
+        <button class="preset-btn" id="preset_net">Network</button>
+        <button class="preset-btn" id="preset_cells">Cell Division</button>
+        <button class="preset-btn" id="preset_unstable">Unstable (Chaos)</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer;
+        let simulationMaterial, displayMaterial, drawMaterial;
+        let renderTargets = [];
+        let currentTarget = 0;
+        let quad;
+        let params = {
+            feed: 0.055,
+            kill: 0.062,
+            diffA: 1.0,
+            diffB: 0.5,
+            timeStep: 1.0,
+            iterations: 20,
+            brushSize: 30
+        };
+        let isDrawing = false;
+        let mousePos = new THREE.Vector2();
+        let canvasSize = 800;
+
+        // Presets based on the reference
+        const presets = {
+            spots: { f: 0.055, k: 0.062, name: "Spots (Mitosis)" },
+            stripes: { f: 0.035, k: 0.065, name: "Stripes (Coral)" },
+            waves: { f: 0.014, k: 0.054, name: "Waves (Moving)" },
+            spirals: { f: 0.018, k: 0.051, name: "Spirals" },
+            fingerprint: { f: 0.041, k: 0.061, name: "Fingerprint" },
+            bacteria: { f: 0.039, k: 0.058, name: "Bacteria Colonies" },
+            worms: { f: 0.078, k: 0.061, name: "Worms" },
+            zebrafish: { f: 0.022, k: 0.051, name: "Zebrafish" },
+            maze: { f: 0.029, k: 0.057, name: "Maze (Labyrinth)" },
+            net: { f: 0.046, k: 0.063, name: "Network" },
+            cells: { f: 0.062, k: 0.061, name: "Cell Division" },
+            unstable: { f: 0.026, k: 0.051, name: "Unstable (Chaos)" }
+        };
+
+        // Vertex shader (shared)
+        const vertexShader = `
+            varying vec2 vUv;
+            void main() {
+                vUv = uv;
+                gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+            }
+        `;
+
+        // Simulation fragment shader (Gray-Scott model)
+        const simulationFragmentShader = `
+            uniform sampler2D tDiffuse;
+            uniform float feed;
+            uniform float kill;
+            uniform float dA;
+            uniform float dB;
+            uniform float dt;
+            uniform vec2 resolution;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 texel = 1.0 / resolution;
+                
+                vec2 uv = texture2D(tDiffuse, vUv).rg;
+                float a = uv.r;
+                float b = uv.g;
+                
+                vec2 laplacian = vec2(0.0);
+                
+                laplacian += texture2D(tDiffuse, vUv + vec2(-texel.x, 0.0)).rg * 0.2;
+                laplacian += texture2D(tDiffuse, vUv + vec2(texel.x, 0.0)).rg * 0.2;
+                laplacian += texture2D(tDiffuse, vUv + vec2(0.0, -texel.y)).rg * 0.2;
+                laplacian += texture2D(tDiffuse, vUv + vec2(0.0, texel.y)).rg * 0.2;
+                
+                laplacian += texture2D(tDiffuse, vUv + vec2(-texel.x, -texel.y)).rg * 0.05;
+                laplacian += texture2D(tDiffuse, vUv + vec2(texel.x, -texel.y)).rg * 0.05;
+                laplacian += texture2D(tDiffuse, vUv + vec2(-texel.x, texel.y)).rg * 0.05;
+                laplacian += texture2D(tDiffuse, vUv + vec2(texel.x, texel.y)).rg * 0.05;
+                
+                laplacian -= uv;
+                
+                float abb = a * b * b;
+                float da = dA * laplacian.r - abb + feed * (1.0 - a);
+                float db = dB * laplacian.g + abb - (kill + feed) * b;
+                
+                a += da * dt;
+                b += db * dt;
+                
+                a = clamp(a, 0.0, 1.0);
+                b = clamp(b, 0.0, 1.0);
+                
+                gl_FragColor = vec4(a, b, 0.0, 1.0);
+            }
+        `;
+
+        // Display fragment shader (black and white)
+        const displayFragmentShader = `
+            uniform sampler2D tDiffuse;
+            uniform bool invertColors;
+            varying vec2 vUv;
+
+            void main() {
+                vec2 uv = texture2D(tDiffuse, vUv).rg;
+                float b = uv.g;
+                
+                // Black and white visualization
+                float value = invertColors ? b : (1.0 - b);
+                vec3 color = vec3(value);
+                
+                gl_FragColor = vec4(color, 1.0);
+            }
+        `;
+
+        // Drawing shader
+        const drawFragmentShader = `
+            uniform sampler2D tDiffuse;
+            uniform vec2 brushPos;
+            uniform float brushSize;
+            uniform bool isDrawing;
+            uniform vec2 resolution;
+            varying vec2 vUv;
+
+            void main() {
+                vec4 color = texture2D(tDiffuse, vUv);
+                
+                if (isDrawing) {
+                    vec2 pixelPos = vUv * resolution;
+                    float dist = distance(pixelPos, brushPos);
+                    
+                    if (dist < brushSize) {
+                        float strength = 1.0 - (dist / brushSize);
+                        strength = smoothstep(0.0, 1.0, strength);
+                        color.g += strength * 0.5;
+                        color.g = clamp(color.g, 0.0, 1.0);
+                    }
+                }
+                
+                gl_FragColor = color;
+            }
+        `;
+
+        function init() {
+            scene = new THREE.Scene();
+            camera = new THREE.OrthographicCamera(-1, 1, 1, -1, 0, 1);
+
+            const container = document.getElementById('canvas-container');
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(canvasSize, canvasSize);
+            container.appendChild(renderer.domElement);
+
+            for (let i = 0; i < 2; i++) {
+                renderTargets.push(new THREE.WebGLRenderTarget(canvasSize, canvasSize, {
+                    minFilter: THREE.LinearFilter,
+                    magFilter: THREE.LinearFilter,
+                    format: THREE.RGBAFormat,
+                    type: THREE.FloatType
+                }));
+            }
+
+            simulationMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: null },
+                    feed: { value: params.feed },
+                    kill: { value: params.kill },
+                    dA: { value: params.diffA },
+                    dB: { value: params.diffB },
+                    dt: { value: params.timeStep },
+                    resolution: { value: new THREE.Vector2(canvasSize, canvasSize) }
+                },
+                vertexShader: vertexShader,
+                fragmentShader: simulationFragmentShader
+            });
+
+            displayMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: null },
+                    invertColors: { value: false }
+                },
+                vertexShader: vertexShader,
+                fragmentShader: displayFragmentShader
+            });
+
+            drawMaterial = new THREE.ShaderMaterial({
+                uniforms: {
+                    tDiffuse: { value: null },
+                    brushPos: { value: new THREE.Vector2() },
+                    brushSize: { value: params.brushSize },
+                    isDrawing: { value: false },
+                    resolution: { value: new THREE.Vector2(canvasSize, canvasSize) }
+                },
+                vertexShader: vertexShader,
+                fragmentShader: drawFragmentShader
+            });
+
+            const geometry = new THREE.PlaneGeometry(2, 2);
+            quad = new THREE.Mesh(geometry, displayMaterial);
+            scene.add(quad);
+
+            initializeTexture();
+            setupControls();
+            setupMouseEvents();
+
+            window.addEventListener('resize', onWindowResize);
+            animate();
+        }
+
+        function initializeTexture(image = null) {
+            const width = canvasSize;
+            const height = canvasSize;
+            const data = new Float32Array(width * height * 4);
+
+            if (image) {
+                const canvas = document.createElement('canvas');
+                canvas.width = width;
+                canvas.height = height;
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(image, 0, 0, width, height);
+                const imageData = ctx.getImageData(0, 0, width, height);
+
+                for (let i = 0; i < width * height; i++) {
+                    const gray = imageData.data[i * 4] / 255.0;
+                    data[i * 4] = 1.0;
+                    data[i * 4 + 1] = gray > 0.5 ? 0.5 + Math.random() * 0.5 : Math.random() * 0.1;
+                    data[i * 4 + 2] = 0.0;
+                    data[i * 4 + 3] = 1.0;
+                }
+            } else {
+                const centerX = width / 2;
+                const centerY = height / 2;
+                const radius = Math.min(width, height) / 8;
+
+                for (let i = 0; i < width * height; i++) {
+                    const x = i % width;
+                    const y = Math.floor(i / width);
+                    const dx = x - centerX;
+                    const dy = y - centerY;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    data[i * 4] = 1.0;
+                    data[i * 4 + 1] = dist < radius ? 0.9 + Math.random() * 0.1 : Math.random() * 0.01;
+                    data[i * 4 + 2] = 0.0;
+                    data[i * 4 + 3] = 1.0;
+                }
+            }
+
+            const initialTexture = new THREE.DataTexture(data, width, height, THREE.RGBAFormat, THREE.FloatType);
+            initialTexture.needsUpdate = true;
+
+            const tempMaterial = new THREE.ShaderMaterial({
+                uniforms: { tDiffuse: { value: initialTexture } },
+                vertexShader: vertexShader,
+                fragmentShader: `
+                    uniform sampler2D tDiffuse;
+                    varying vec2 vUv;
+                    void main() {
+                        gl_FragColor = texture2D(tDiffuse, vUv);
+                    }
+                `
+            });
+
+            quad.material = tempMaterial;
+            renderer.setRenderTarget(renderTargets[0]);
+            renderer.render(scene, camera);
+            renderer.setRenderTarget(renderTargets[1]);
+            renderer.render(scene, camera);
+            renderer.setRenderTarget(null);
+            quad.material = displayMaterial;
+        }
+
+        function setupMouseEvents() {
+            const canvas = renderer.domElement;
+
+            canvas.addEventListener('mousedown', (e) => {
+                isDrawing = true;
+                updateMousePos(e);
+            });
+
+            canvas.addEventListener('mousemove', (e) => {
+                if (isDrawing) {
+                    updateMousePos(e);
+                }
+            });
+
+            canvas.addEventListener('mouseup', () => {
+                isDrawing = false;
+            });
+
+            canvas.addEventListener('mouseleave', () => {
+                isDrawing = false;
+            });
+
+            // Touch support
+            canvas.addEventListener('touchstart', (e) => {
+                e.preventDefault();
+                isDrawing = true;
+                updateTouchPos(e);
+            });
+
+            canvas.addEventListener('touchmove', (e) => {
+                e.preventDefault();
+                if (isDrawing) {
+                    updateTouchPos(e);
+                }
+            });
+
+            canvas.addEventListener('touchend', () => {
+                isDrawing = false;
+            });
+        }
+
+        function updateMousePos(e) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            mousePos.x = ((e.clientX - rect.left) / rect.width) * canvasSize;
+            mousePos.y = (1 - (e.clientY - rect.top) / rect.height) * canvasSize;
+        }
+
+        function updateTouchPos(e) {
+            const rect = renderer.domElement.getBoundingClientRect();
+            const touch = e.touches[0];
+            mousePos.x = ((touch.clientX - rect.left) / rect.width) * canvasSize;
+            mousePos.y = (1 - (touch.clientY - rect.top) / rect.height) * canvasSize;
+        }
+
+        function setupControls() {
+            const controls = {
+                feed: document.getElementById('feed'),
+                kill: document.getElementById('kill'),
+                diffA: document.getElementById('diffA'),
+                diffB: document.getElementById('diffB'),
+                timeStep: document.getElementById('timeStep'),
+                iterations: document.getElementById('iterations'),
+                brushSize: document.getElementById('brushSize')
+            };
+
+            const values = {
+                feed: document.getElementById('feedValue'),
+                kill: document.getElementById('killValue'),
+                diffA: document.getElementById('diffAValue'),
+                diffB: document.getElementById('diffBValue'),
+                timeStep: document.getElementById('timeStepValue'),
+                iterations: document.getElementById('iterValue'),
+                brushSize: document.getElementById('brushValue')
+            };
+
+            Object.keys(controls).forEach(key => {
+                controls[key].addEventListener('input', (e) => {
+                    const value = parseFloat(e.target.value);
+                    params[key] = value;
+
+                    if (key === 'brushSize') {
+                        values[key].textContent = Math.floor(value);
+                        drawMaterial.uniforms.brushSize.value = value;
+                    } else {
+                        values[key].textContent = value.toFixed(4);
+                        if (key !== 'iterations') {
+                            simulationMaterial.uniforms[key === 'timeStep' ? 'dt' : key].value = value;
+                        }
+                    }
+                });
+            });
+
+            document.getElementById('reset').addEventListener('click', () => {
+                initializeTexture();
+            });
+
+            document.getElementById('clearDraw').addEventListener('click', () => {
+                initializeTexture();
+            });
+
+            document.getElementById('invertColors').addEventListener('change', (e) => {
+                displayMaterial.uniforms.invertColors.value = e.target.checked;
+            });
+
+            document.getElementById('imageUpload').addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = (event) => {
+                        const img = new Image();
+                        img.onload = () => {
+                            initializeTexture(img);
+                        };
+                        img.src = event.target.result;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Setup all preset buttons
+            Object.keys(presets).forEach(key => {
+                const btn = document.getElementById(`preset_${key}`);
+                if (btn) {
+                    btn.addEventListener('click', () => {
+                        setPreset(presets[key].f, presets[key].k);
+                    });
+                }
+            });
+        }
+
+        function setPreset(f, k) {
+            params.feed = f;
+            params.kill = k;
+            document.getElementById('feed').value = f;
+            document.getElementById('kill').value = k;
+            document.getElementById('feedValue').textContent = f.toFixed(4);
+            document.getElementById('killValue').textContent = k.toFixed(4);
+            simulationMaterial.uniforms.feed.value = f;
+            simulationMaterial.uniforms.kill.value = k;
+            initializeTexture();
+        }
+
+        function onWindowResize() {
+            const size = Math.min(window.innerWidth, window.innerHeight, 1000);
+            renderer.setSize(size, size);
+        }
+
+        function applyDrawing() {
+            if (isDrawing) {
+                drawMaterial.uniforms.tDiffuse.value = renderTargets[currentTarget].texture;
+                drawMaterial.uniforms.brushPos.value = mousePos;
+                drawMaterial.uniforms.isDrawing.value = true;
+
+                quad.material = drawMaterial;
+                const nextTarget = 1 - currentTarget;
+                renderer.setRenderTarget(renderTargets[nextTarget]);
+                renderer.render(scene, camera);
+                currentTarget = nextTarget;
+
+                drawMaterial.uniforms.isDrawing.value = false;
+            }
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Apply drawing
+            applyDrawing();
+
+            // Run simulation steps
+            quad.material = simulationMaterial;
+            for (let i = 0; i < params.iterations; i++) {
+                simulationMaterial.uniforms.tDiffuse.value = renderTargets[currentTarget].texture;
+                const nextTarget = 1 - currentTarget;
+                renderer.setRenderTarget(renderTargets[nextTarget]);
+                renderer.render(scene, camera);
+                currentTarget = nextTarget;
+            }
+
+            // Display result
+            quad.material = displayMaterial;
+            displayMaterial.uniforms.tDiffuse.value = renderTargets[currentTarget].texture;
+            renderer.setRenderTarget(null);
+            renderer.render(scene, camera);
+        }
+
+        init();
+    </script>
+</body>
+
+</html>

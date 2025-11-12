@@ -117,6 +117,12 @@ layout: none
             display: block;
         }
 
+        .project-image iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            display: block;
+        }
+
         footer {
             text-align: center;
             padding: 2rem;
@@ -144,8 +150,8 @@ layout: none
 <body>
     <nav>
         <div class="nav-content">
-            <a href="{{ site.baseurl }}/" class="back-link">← Back to Portfolio</a>
-            <span>Daehong Kim</span>
+            <a href="{{ site.baseurl }}/#projects" class="back-link">← Back to Portfolio</a>
+            <a href="{{ site.baseurl }}/" class="back-link">Daehong Kim</a>
         </div>
     </nav>
 
@@ -178,7 +184,14 @@ layout: none
         </div>
     </div>
 
+
     <div class="images-container">
+        <div class="project-image">
+            <iframe src="https://www.youtube.com/embed/lGxvCQoZwio?si=HGzWSUzVZvhjZCIL" title="YouTube video player"
+                frameborder="0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
         <div class="project-image">
             <img src="1.jpg" alt="Shoppertoire Overview">
         </div>

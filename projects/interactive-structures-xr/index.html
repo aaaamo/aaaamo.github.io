@@ -100,20 +100,34 @@ layout: none
         }
 
         .images-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
             max-width: 1400px;
             margin: 0 auto;
             padding: 0 2rem 4rem;
+            align-items: center;
         }
 
         .project-image {
-            width: 100%;
+            width: 75%;
             margin-bottom: 2rem;
             background: #f5f5f5;
+        }
+
+        .images-container span {
+            width: 70%;
         }
 
         .project-image img {
             width: 100%;
             height: auto;
+            display: block;
+        }
+
+        .project-image iframe {
+            width: 100%;
+            aspect-ratio: 16 / 9;
             display: block;
         }
 
@@ -144,8 +158,8 @@ layout: none
 <body>
     <nav>
         <div class="nav-content">
-            <a href="{{ site.baseurl }}/" class="back-link">← Back to Portfolio</a>
-            <span>Daehong Kim</span>
+            <a href="{{ site.baseurl }}/#projects" class="back-link">← Back to Portfolio</a>
+            <a href="{{ site.baseurl }}/" class="back-link">Daehong Kim</a>
         </div>
     </nav>
 
@@ -183,19 +197,44 @@ layout: none
                 and engineers understand and prototype structural behavior in real-time.
             </p>
         </div>
-    </div>
 
-    <!-- <div class="images-container">
-        <div class="project-image">
-            <img src="{{ site.baseurl }}/projects/interactive-structures-xr/1.jpg" alt="XR Interface Overview">
+        <div class="images-container">
+            <span>
+                <p>
+                    This product is an exploration of educational software in VR headsets to build, edit and
+                    analyze architectural structure systems using graph structure. Users of this app can build simple
+                    structures using node and edges augmented in real life.
+                </p>
+            </span>
+            <div class="project-image">
+                <img src="add_node.gif" alt="Add Node">
+            </div>
+            <span>
+                <p>
+                    Toggle node into support nodes or free nodes, then add load at free nodes for analysis. Nodes and
+                    edges can be moved in AR space to edit the structure.
+                </p>
+            </span>
+            <div class="project-image">
+                <img src="add_load.gif" alt="Add Load">
+            </div>
+            <span>
+                <p>
+                    Applying Finite Element Method to structure, the forces on each edge members of the structure is
+                    visualized in red - tension and blue - compression.
+                </p>
+            </span>
+            <div class="project-image">
+                <img src="analysis.gif" alt="Analysis">
+            </div>
+            <div class="project-image">
+                <iframe src="https://www.youtube.com/embed/94vJ7wHn_NQ?si=Cj5xcIBhWO3wAlSc" title="YouTube video player"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                    referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+            </div>
         </div>
-        <div class="project-image">
-            <img src="{{ site.baseurl }}/projects/interactive-structures-xr/2.jpg" alt="Form-Finding System">
-        </div>
-        <div class="project-image">
-            <img src="{{ site.baseurl }}/projects/interactive-structures-xr/3.jpg" alt="Meta Quest Integration">
-        </div>
-    </div> -->
+    </div>
 
     <footer>
         <p>&copy; 2025 Daehong Kim. All rights reserved.</p>

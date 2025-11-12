@@ -1,0 +1,208 @@
+---
+layout: none
+---
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manta - Daehong Kim</title>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: #fff;
+        }
+
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 1.5rem 2rem;
+            z-index: 1000;
+            border-bottom: 1px solid #eee;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .back-link {
+            text-decoration: none;
+            color: #333;
+            font-weight: 500;
+            transition: color 0.3s;
+        }
+
+        .back-link:hover {
+            color: #0066cc;
+        }
+
+        .project-header {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 8rem 2rem 3rem;
+        }
+
+        h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+        }
+
+        .project-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            color: #666;
+        }
+
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .meta-label {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #999;
+            margin-bottom: 0.25rem;
+        }
+
+        .meta-value {
+            font-size: 1rem;
+        }
+
+        .project-description {
+            max-width: 800px;
+            font-size: 1.1rem;
+            line-height: 1.8;
+            margin-bottom: 4rem;
+            color: #666;
+        }
+
+        .images-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem 4rem;
+        }
+
+        .project-image {
+            width: 100%;
+            margin-bottom: 2rem;
+            background: #f5f5f5;
+        }
+
+        .project-image img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        footer {
+            text-align: center;
+            padding: 2rem;
+            background: #f9f9f9;
+            color: #666;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+
+            .project-header {
+                padding-top: 6rem;
+            }
+
+            .project-meta {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <div class="nav-content">
+            <a href="{{ site.baseurl }}/#projects" class="back-link">← Back to Portfolio</a>
+            <a href="{{ site.baseurl }}/" class="back-link">Daehong Kim</a>
+        </div>
+    </nav>
+
+    <div class="project-header">
+        <h1>Morpholux + Manta</h1>
+        <div class="project-meta">
+            <div class="meta-item">
+                <span class="meta-label">Date</span>
+                <span class="meta-value">Fall 2016</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Type</span>
+                <span class="meta-value">Undergraduate Digital Design Studio</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Supervisor</span>
+                <span class="meta-value">Hangman Zho</span>
+            </div>
+            <div class="meta-item">
+                <span class="meta-label">Collaborators</span>
+                <span class="meta-value">Daye Kim, Kiwon Jeon, Jaejin Lee</span>
+            </div>
+        </div>
+        <div class="project-description">
+            <p>
+                MorphoLux is a series of lamp shades created as an introductory project for exploring form-making
+                through Grasshopper. The primary goal was to provide a versatile design mechanism, where users have the
+                freedom to customize the final product to their liking by downloading and modifying an open-source
+                algorithm. By altering the parametric settings—such as the shape, proportions, or tessellation
+                density—users can achieve a wide spectrum of aesthetics, ranging from subtle and minimal to more
+                intricate and sculptural.
+                <br><br>
+                Manta was selected in an in-class competition to be installed at the SNU DAAE hall, serving
+                as a pavilion-like spatial intervention. Its initial design began with a single large triangle,
+                which was then broken down into smaller triangles to form a tessellated surface. Anchor points
+                were chosen, and a series of simulated forces pulling towards the ground was applied, allowing
+                the piece to naturally assume its final curved and flowing form. This computational step ensured
+                that the resulting mesh not only looked visually dynamic but also maintained structural logic.
+            </p>
+        </div>
+    </div>
+
+    <div class="images-container">
+        <div class="project-image">
+            <img src="1.jpg" alt="Manta Installation">
+        </div>
+        <div class="project-image">
+            <img src="2.jpg" alt="Tessellation Process">
+        </div>
+        <div class="project-image">
+            <img src="3.jpg" alt="Detail View">
+        </div>
+    </div>
+
+    <footer>
+        <p>&copy; 2025 Daehong Kim. All rights reserved.</p>
+    </footer>
+</body>
+
+</html>

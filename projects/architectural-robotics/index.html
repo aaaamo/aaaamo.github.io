@@ -1,0 +1,99 @@
+---
+layout: project
+title: Air Drawing + From Foam to Frosting
+date_label: Fall 2025 - Spring 2026
+sort_date: "2026-04"
+keywords: [Robot Drawing, Hand Tracking, ROS, Surface Scanning]
+thumb: thumb.jpg
+thumb_anim: thumb.gif
+summary: Two group projects with industrial robot arms, one drawing from mid-air hand gestures and one spraying and scanning frosting on a cake.
+project_type: Course Project
+affiliation: Architectural Robotics courses, Carnegie Mellon University
+advisor: Joshua Bard, Vina Wei
+people: Sheen Cao, Carla Flores, Serena Sun, Daisy Kim, Kruti Makwana, Yash Shah
+links:
+  - label: ros_hand_tracking
+    url: https://github.com/aaaamo/ros_hand_tracking
+---
+<p>
+    In Air Drawing, a person draws a stroke in the air and an ABB IRB 120 draws it on paper with a water
+    brush. An overhead depth camera captures the hand, MediaPipe extracts the landmarks and gestures, and
+    the path is sent through ROS to Grasshopper, which smooths it and drives the robot. A Victory gesture
+    starts a drawing, a Pinch records points, and a Thumbs Up ends it.
+</p>
+
+<figure class="medium plain">
+    <img src="air_setup.jpg" alt="Physical setup with the depth camera, the robot arm, and the drawing surface"
+        loading="lazy">
+    <figcaption>The depth camera looks down at the interaction zone and the robot draws on a paper
+        roll.</figcaption>
+</figure>
+
+<div class="grid-3">
+    <figure class="plain">
+        <img src="air_path_hello.png" alt="Captured hand path spelling hello, with its smoothed version"
+            loading="lazy">
+        <figcaption>Captured path and its smoothed version.</figcaption>
+    </figure>
+    <figure>
+        <video src="air_run_top.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Drawing run seen from above.</figcaption>
+    </figure>
+    <figure>
+        <img src="air_drawing_closeup.jpg" alt="Close-up of the brush drawing on paper" loading="lazy">
+        <figcaption>Brush on paper.</figcaption>
+    </figure>
+</div>
+
+<p>
+    The project ran in three stages. First the robot copied the gesture. Then the gesture was interpreted
+    before drawing. In the last stage the list of 3D points was sent to Claude with a prompt asking for a
+    response drawing, and the robot drew the human stroke in red and the model's response in blue. The
+    responses stayed simple. Sending the stroke as a list of points lost most of what made the gesture
+    expressive.
+</p>
+<p>
+    Other experiments applied a polar array to the path and used a three-pen end effector that leaves
+    three marks in one motion.
+</p>
+
+<div class="grid-2">
+    <figure>
+        <img src="air_response_1.png" alt="Human path in red points and the model's response as a green curve"
+            loading="lazy">
+        <figcaption>Human path (red points) and the model's response (green curve), previewed in
+            Grasshopper.</figcaption>
+    </figure>
+    <figure class="plain">
+        <img src="air_circular_array.png" alt="Hand path repeated in a polar array" loading="lazy">
+        <figcaption>A path repeated in a polar array.</figcaption>
+    </figure>
+</div>
+
+<p>
+    From Foam to Frosting takes robotic spray plastering, a technique from architectural fabrication, and
+    tries it on a cake. The end effector holds a whipped cream dispenser. A pneumatic cylinder, switched
+    by the robot's gripper output, pulls a wire tied to the handle. Raster, linear, circular, and swirl
+    paths were tested on a panel to tune the wait time, spray height, and speed before the final cake.
+</p>
+<p>
+    An IR distance sensor on the tool scans the surface at a grid of points before and after spraying,
+    and the difference gives the thickness of the deposited layer. In the two final tests the layer was
+    about 12 to 24 mm thick in the first and about 20 to 31 mm in the second. Each point used the median
+    of 100 samples, and repeated readings at the same point still varied.
+</p>
+
+<div class="grid-3">
+    <figure class="plain">
+        <img src="frosting_cover.jpg" alt="Whipped cream dispenser nozzle on the frosted cake" loading="lazy">
+        <figcaption>The spray tool on the cake.</figcaption>
+    </figure>
+    <figure>
+        <video src="frosting_final_run.mp4" autoplay loop muted playsinline></video>
+        <figcaption>Spraying and scanning in the final run.</figcaption>
+    </figure>
+    <figure class="framed">
+        <img src="frosting_report_28.jpg" alt="Report page on the results of the final two tests" loading="lazy">
+        <figcaption>Scanned surface before and after spraying, from the project report.</figcaption>
+    </figure>
+</div>

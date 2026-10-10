@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% if page.title %}{{ page.title }} - {{ site.title }}{% else %}{{ site.title }} - Portfolio{% endif %}</title>
+    <meta name="description"
+        content="{{ page.summary | default: site.description | strip_html | strip_newlines | escape }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400..600;1,8..60,400..600&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="{{ '/assets/css/main.css' | relative_url }}">
+</head>
+
+<body>
+    <div class="layout">
+        <aside class="sidebar">
+            <a href="{{ '/' | relative_url }}" class="site-name">{{ site.title }}</a>
+            <p class="site-role">Computational Design</p>
+
+            <nav aria-label="Sections">
+                <ul class="section-nav">
+                    <li><a href="{{ '/#about' | relative_url }}" data-section="about">About</a></li>
+                    <li><a href="{{ '/#projects' | relative_url }}" data-section="projects" {% if
+                            page.layout=='project' %}class="is-current" {% endif %}>Projects</a></li>
+                    <li><a href="{{ '/#publications' | relative_url }}" data-section="publications">Publications</a>
+                    </li>
+                    <li><a href="{{ '/#experiences' | relative_url }}" data-section="experiences">Experiences</a>
+                    </li>
+                </ul>
+            </nav>
+
+            <ul class="site-links">
+                {% for link in site.links %}
+                <li><a href="{{ link.url }}" {% unless link.url contains 'mailto:' %}target="_blank" rel="noopener" {%
+                        endunless %}>{{ link.label }}</a></li>
+                {% endfor %}
+            </ul>
+        </aside>
+
+        <div class="content">
+            <main>
+                {{ content }}
+            </main>
+
+            <footer class="site-footer">
+                <p>&copy; {{ site.time | date: '%Y' }} {{ site.title }}</p>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>

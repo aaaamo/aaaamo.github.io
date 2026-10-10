@@ -1,0 +1,81 @@
+---
+layout: project
+title: Soap Bubble Rendering
+subtitle: Spectral rendering and multilayered BSDFs
+date_label: Spring 2026
+sort_date: "2026-05"
+keywords: [Spectral Rendering, Thin-film Interference, Layered BSDF]
+thumb: thumb.jpg
+thumb_anim: thumb.gif
+summary: Rendering soap bubbles with hero wavelength spectral sampling and a position-free Monte Carlo layered BSDF.
+project_type: Course Project
+affiliation: 15-668 Physics-Based Rendering, Carnegie Mellon University
+role: Individual project
+advisor: Ioannis Gkioulekas
+---
+<p>
+    This project renders soap bubbles by adding two features to DIRT, the ray tracer used in the course.
+    A soap bubble gets its color from thin-film interference, which depends on wavelength and film
+    thickness, and an RGB renderer does not track wavelength. Here each ray carries four stratified
+    wavelengths with hero wavelength sampling. After a dispersive bounce only the hero wavelength
+    continues. The iridescent colors come out of the simulation without any hand-tuned color mapping.
+</p>
+
+<figure>
+    <img src="final.jpg"
+        alt="Three final renders of soap bubbles, two against a seafront environment map and one on a ground plane"
+        loading="lazy">
+    <figcaption>Final bubble renders.</figcaption>
+</figure>
+
+<p>
+    The spectral tracer was tested on a dispersive glass sphere whose index of refraction follows the
+    Cauchy formula. A thin-film material was then added, using the Airy reflectance for each
+    polarization. With a uniform thickness over the sphere, the 200 nm film reflects shorter wavelengths
+    and the 400 nm film reflects longer ones. The thickness can also be read from a texture. A marble
+    texture mapped to 150 to 700 nm gives an uneven film.
+</p>
+
+<div class="grid-2">
+    <figure>
+        <img src="dispersive.jpg" alt="Dispersive glass sphere in a Cornell box" loading="lazy">
+        <figcaption>Dispersive glass.</figcaption>
+    </figure>
+    <figure>
+        <img src="marble_layer.jpg" alt="Thin-film sphere with marble-textured thickness" loading="lazy">
+        <figcaption>Thin film with marble-textured thickness, 150 to 700 nm.</figcaption>
+    </figure>
+    <figure>
+        <img src="soap_200.jpg" alt="Thin-film sphere with 200 nm thickness" loading="lazy">
+        <figcaption>Thin film, 200 nm.</figcaption>
+    </figure>
+    <figure>
+        <img src="soap_400.jpg" alt="Thin-film sphere with 400 nm thickness" loading="lazy">
+        <figcaption>Thin film, 400 nm.</figcaption>
+    </figure>
+</div>
+
+<p>
+    A bubble is a thin shell with two interfaces, and a single surface cannot model the light bouncing
+    between them. The multilayered BSDF follows the position-free Monte Carlo framework of Guo et al.,
+    which traces paths through a stack of flat layers inside the BSDF.
+</p>
+
+<div class="grid-2">
+    <figure>
+        <img src="layered.jpg" alt="Earth-textured sphere with a multilayered material in a Cornell box"
+            loading="lazy">
+        <figcaption>Multilayered material on a sphere.</figcaption>
+    </figure>
+    <figure>
+        <img src="dragon_layered.jpg" alt="Dragon model with a multilayered material" loading="lazy">
+        <figcaption>Multilayered material on the dragon model.</figcaption>
+    </figure>
+</div>
+
+<p>
+    The spectral tracer costs about four times as much as an RGB tracer, and the unidirectional tracer
+    struggles with caustics from refraction through the bubble. The next step would be the bidirectional
+    estimator of Guo et al. inside the layer stack, combined with bidirectional path tracing at scene
+    level.
+</p>

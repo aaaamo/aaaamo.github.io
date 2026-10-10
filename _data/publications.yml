@@ -1,0 +1,17 @@
+- authors: Daehong Kim, Juney Lee
+  title: Interactive augmented reality platform for embodied learning of structural design
+  venue: Proceedings of IASS-IWSS 2026, Turin, Italy
+  year: 2026
+  links:
+    - label: Project
+      url: /projects/interactive-structures-xr/
+
+- authors: Daehong Kim, Haichao Miao, Shusen Liu
+  title: "LEDGER: Claim-to-Evidence Trace Graphs for Auditing LLM Agents"
+  venue: arXiv preprint arXiv:2608.18398
+  year: 2026
+  links:
+    - label: arXiv
+      url: https://arxiv.org/abs/2608.18398
+    - label: Project
+      url: /projects/ledger/

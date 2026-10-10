@@ -1,232 +1,72 @@
 ---
-layout: none
+layout: project
+title: Interactive Reaction-Diffusion
+date_label: Fall 2025
+sort_date: "2025-11"
+keywords: [Reaction-Diffusion, Shader, Audio Input]
+thumb: thumb.jpg
+thumb_anim: thumb.gif
+summary: Browser tool that runs a Gray-Scott reaction-diffusion model with image and microphone input.
+project_type: Course Project
+affiliation: 48-727 Inquiry into Computational Design, Carnegie Mellon University
+people: Mary Zhang, Chloe Xu
+links:
+  - label: Demo Page
+    url: demo
 ---
-<!DOCTYPE html>
-<html lang="en">
+<p>
+    This browser tool runs the Gray-Scott reaction-diffusion model in a fragment shader. Sliders set the
+    feed rate, the kill rate, and the two diffusion coefficients, and drawing on the canvas adds to the
+    pattern. Feed and kill rate presets were taken from
+    <a href="https://github.com/colejd/Reaction-Diffusion-ThreeJS" target="_blank"
+        rel="noopener noreferrer">colejd/Reaction-Diffusion-ThreeJS</a>.
+</p>
+<p>
+    It takes two kinds of input. An uploaded black-and-white image, here street maps of Pittsburgh,
+    Seoul, and Barcelona, sets where the pattern starts. With the microphone on, each sound sample adds a
+    spot. Pitch sets the horizontal position, and loudness sets the vertical position and the spot size.
+</p>
 
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Interactive Reaction-Diffusion - Daehong Kim</title>
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;500;600;700&display=swap"
-        rel="stylesheet">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+<div class="grid-2">
+    <figure>
+        <img src="thumbnail.gif" alt="Reaction-diffusion spot pattern spreading across the canvas" loading="lazy">
+        <figcaption>Pattern spreading across the canvas.</figcaption>
+    </figure>
+    <figure>
+        <img src="music2.gif" alt="Spots added to the pattern by microphone input" loading="lazy">
+        <figcaption>Microphone input.</figcaption>
+    </figure>
+</div>
 
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: #fff;
-        }
+<div class="grid-3">
+    <figure>
+        <img src="1.png" alt="Street map of Pittsburgh used as input" loading="lazy">
+        <figcaption>Pittsburgh.</figcaption>
+    </figure>
+    <figure>
+        <img src="2.png" alt="Street map of Seoul used as input" loading="lazy">
+        <figcaption>Seoul.</figcaption>
+    </figure>
+    <figure>
+        <img src="5.png" alt="Street map of Barcelona used as input" loading="lazy">
+        <figcaption>Barcelona.</figcaption>
+    </figure>
+    <figure>
+        <img src="1.gif" alt="Pattern growing from the Pittsburgh map" loading="lazy">
+    </figure>
+    <figure>
+        <img src="2.gif" alt="Pattern growing from the Seoul map" loading="lazy">
+    </figure>
+    <figure>
+        <img src="5.gif" alt="Pattern growing from the Barcelona map" loading="lazy">
+    </figure>
+</div>
 
-        nav {
-            position: fixed;
-            top: 0;
-            width: 100%;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1.5rem 2rem;
-            z-index: 1000;
-            border-bottom: 1px solid #eee;
-        }
-
-        .nav-content {
-            max-width: 1400px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .back-link {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-        }
-
-        .back-link:hover {
-            color: #0066cc;
-        }
-
-        .project-header {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 8rem 2rem 3rem;
-        }
-
-        h1 {
-            font-size: 3rem;
-            margin-bottom: 1rem;
-            font-weight: 300;
-        }
-
-        .project-meta {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            flex-wrap: wrap;
-            color: #666;
-        }
-
-        .meta-item {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .meta-label {
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #999;
-            margin-bottom: 0.25rem;
-        }
-
-        .meta-value {
-            font-size: 1rem;
-        }
-
-        .project-description {
-            max-width: 800px;
-            font-size: 1.1rem;
-            line-height: 1.8;
-            margin-bottom: 4rem;
-            color: #666;
-        }
-
-        .images-container {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 0 2rem 4rem;
-        }
-
-        .project-image {
-            display: flex;
-            gap: 1rem;
-            width: 100%;
-            margin-bottom: 2rem;
-            background: #f5f5f5;
-            align-items: center;
-        }
-
-        .project-image img {
-            width: 19%;
-            height: auto;
-            display: block;
-        }
-
-        .project-image iframe {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 560/315;
-            display: block;
-        }
-
-        footer {
-            text-align: center;
-            padding: 2rem;
-            background: #f9f9f9;
-            color: #666;
-            margin-top: 2rem;
-        }
-
-        @media (max-width: 768px) {
-            h1 {
-                font-size: 2rem;
-            }
-
-            .project-header {
-                padding-top: 6rem;
-            }
-
-            .project-meta {
-                gap: 1rem;
-            }
-        }
-    </style>
-</head>
-
-<body>
-    <nav>
-        <div class="nav-content">
-            <a href="{{ site.baseurl }}/#projects" class="back-link">← Back to Portfolio</a>
-            <a href="{{ site.baseurl }}/" class="back-link">Daehong Kim</a>
-        </div>
-    </nav>
-
-    <div class="project-header">
-        <h1>Interactive Reaction-Diffusion</h1>
-        <div class="project-meta">
-            <div class="meta-item">
-                <span class="meta-label">Date</span>
-                <span class="meta-value">Fall 2025</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Type</span>
-                <span class="meta-value">Group Project</span>
-            </div>
-            <div class="meta-item">
-                <span class="meta-label">Collaborators</span>
-                <span class="meta-value">Mary Zhang, Chloe Xu</span>
-            </div>
-        </div>
-        <div class="project-description">
-            <p>
-                The Reaction-Diffusion System is an interactive visualization that implements the Gray-Scott model, a
-                mathematical framework that simulates the emergent patterns formed by chemical reactions in nature. By
-                manipulating feed and kill rates alongside diffusion coefficients, the system generates diverse organic
-                patterns.
-                <br>
-                The project explores human-system interaction through two epochs: one responding to urban
-                fabric imagery from cities like Pittsburgh and Barcelona, and another driven by real-time audio input
-                that maps pitch and amplitude to spatial coordinates.
-                <br>Feed-Kill ratio presets were taken from
-                <a href="https://github.com/colejd/Reaction-Diffusion-ThreeJS" target="_blank"
-                    rel="noopener noreferrer">
-                    https://github.com/colejd/Reaction-Diffusion-ThreeJS
-                </a>
-                <br><br>
-            </p>
-            <a href="demo" target="_blank" rel="noopener noreferrer" class="back-link">Demo Page</a>
-        </div>
+<figure class="medium">
+    <div class="video">
+        <iframe src="https://www.youtube.com/embed/6RGTQc1jiws?si=czwOKLMn5QFjpMcB"
+            title="Interactive Reaction-Diffusion video"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
     </div>
-
-    <div class="images-container">
-        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem;">
-            <img src="thumbnail.gif" alt="reaction-diffusion">
-            <img src="music2.gif" alt="reaction-diffusion">
-        </div>
-        <br> <br>
-        <div class="project-image">
-            <img src="1.png" alt="Pittsburgh">
-            <img src="2.png" alt="Seoul">
-            <img src="3.png" alt="NYC">
-            <img src="4.png" alt="Paris">
-            <img src="5.png" alt="Barcelona">
-        </div>
-        <div class="project-image">
-            <img src="1.gif" alt="Pittsburgh">
-            <img src="2.gif" alt="Seoul">
-            <img src="3.gif" alt="NYC">
-            <img src="4.gif" alt="Paris">
-            <img src="5.gif" alt="Barcelona">
-        </div>
-        <div class="project-image">
-            <iframe src="https://www.youtube.com/embed/6RGTQc1jiws?si=czwOKLMn5QFjpMcB" title="YouTube video player"
-                frameborder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
-        </div>
-    </div>
-
-    <footer>
-        <p>&copy; 2025 Daehong Kim. All rights reserved.</p>
-    </footer>
-</body>
-
-</html>
+</figure>

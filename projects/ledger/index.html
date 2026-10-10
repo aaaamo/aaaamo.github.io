@@ -1,0 +1,83 @@
+---
+layout: project
+title: LEDGER
+subtitle: Claim-to-Evidence Trace Graphs for Auditing LLM Agents
+date_label: Summer 2026
+sort_date: "2026-08"
+keywords: [LLM Agents, Trace Graphs, Visualization]
+thumb: thumb.jpg
+thumb_anim: thumb.gif
+summary: Tracing and review system that builds layered trace graphs over LLM agent sessions.
+project_type: Research
+affiliation: Lawrence Livermore National Laboratory
+role: Computing Scholar Intern
+advisor_label: Mentor
+advisor: Shusen Liu
+people: Haichao Miao
+links:
+  - label: arXiv 2608.18398
+    url: https://arxiv.org/abs/2608.18398
+---
+<p>
+    LEDGER is a tracing and review system for sessions run by LLM agents, developed during a summer
+    internship at Lawrence Livermore National Laboratory. An agent session can include planning, file
+    reads, code execution, edits, and generated tables or plots. Observability tools record these events,
+    but a reviewer still has to work out which of them support the final answer. LEDGER runs next to an
+    unmodified agent session and organizes the recorded events into a layered graph.
+</p>
+
+<figure class="framed">
+    <img src="dashboard.png" alt="LEDGER review interface with the trace graph and node details" loading="lazy">
+    <figcaption>Review interface. The graph is on the left and the details of the selected node are on the
+        right.</figcaption>
+</figure>
+
+<p>
+    The lower level groups the recorded events into Evidence Nodes: messages, tool calls, and artifacts
+    such as files, patches, and plots. The upper level groups Evidence Nodes into Workflow Nodes of six
+    types: context, plan, inspect, execute, validate, and claim. Typed edges such as uses, produces,
+    checked_by, and supports connect them, so a reviewer can start from a claim and follow the edges
+    back to the actions and artifacts behind it.
+</p>
+<p>
+    The recorded events come from deterministic parsing of the session transcript. A separate tracer agent
+    groups them into nodes and adds the edges, so the graph is an interpretation and can be incomplete or
+    wrong.
+</p>
+
+<div class="grid-2">
+    <figure class="plain">
+        <img src="workflow_nodes.png" alt="Workflow Nodes of a session" loading="lazy">
+        <figcaption>Workflow Nodes of a housing recommendation session.</figcaption>
+    </figure>
+    <figure class="plain">
+        <img src="evidence_nodes.png" alt="Evidence Nodes of a session" loading="lazy">
+        <figcaption>Evidence Nodes of the same session.</figcaption>
+    </figure>
+</div>
+
+<p>
+    Selecting an Evidence Node opens the recorded tool call, its result, its relations to other nodes,
+    and the related artifacts. The graph works as an index into the recorded work, and the source records
+    can be opened from it. Event and log views also show how the graph itself was built, which helps tell
+    an agent error from a tracing error.
+</p>
+
+<figure class="medium framed">
+    <img src="event_view.png" alt="Event detail view for one tool call" loading="lazy">
+    <figcaption>Event detail view for one tool call in the NetworkX session.</figcaption>
+</figure>
+
+<p>
+    The system was tried on two sessions run in Codex, a data analysis task on an air-quality dataset and
+    a feature addition to NetworkX. In the first, the trace shows a failed script run, the patch that
+    repaired it, and the path from the final claim to the plot and tables it relies on. In the second, it
+    separates the first implementation from a guard added later and records which test run covered which
+    behavior.
+</p>
+
+<figure class="framed">
+    <img src="case1_artifact.png" alt="Artifact-centered review path in the data analysis case study" loading="lazy">
+    <figcaption>Data analysis case. The selected plot is linked to the steps that checked it and to the final
+        report message.</figcaption>
+</figure>

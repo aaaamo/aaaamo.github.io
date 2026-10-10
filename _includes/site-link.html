@@ -1,0 +1,8 @@
+{% comment %}One link from site.links. Files hosted on the site are offered as downloads.{% endcomment %}
+{% if include.link.file %}
+<a href="{{ include.link.url | relative_url }}" download>{{ include.link.label }}</a>
+{% elsif include.link.url contains 'mailto:' %}
+<a href="{{ include.link.url }}">{{ include.link.label }}</a>
+{% else %}
+<a href="{{ include.link.url }}" target="_blank" rel="noopener">{{ include.link.label }}</a>
+{% endif %}

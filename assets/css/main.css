@@ -99,6 +99,7 @@ a:hover {
 .site-name {
     display: block;
     font-size: 1.6rem;
+    font-weight: 600;
     line-height: 1.1;
     letter-spacing: -0.015em;
     text-decoration: none;

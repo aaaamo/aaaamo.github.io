@@ -3,9 +3,11 @@ description: "Architecture & Computational Design Portfolio"
 
 links:
   - label: CV
-    url: "https://www.dropbox.com/scl/fi/1m03pddglza31n7voakh4/DaehongKim_CV.pdf?rlkey=kbjdri2uy8vmsoiais511hu1w&st=pw45iu3f&dl=1"
+    url: "/assets/files/DaehongKim_CV.pdf"
+    file: true
   - label: Portfolio
-    url: "https://www.dropbox.com/scl/fi/oz9uadbfwbw9zazqsu3hv/DaehongKim_Portfolio.pdf?rlkey=y5mgvrh0i52qjy76b3rd56kxz&st=12tmo8jr&dl=1"
+    url: "/assets/files/DaehongKim_Portfolio.pdf"
+    file: true
   - label: Email
     url: "mailto:iamdaehongkim@gmail.com"
   - label: LinkedIn

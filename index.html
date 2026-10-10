@@ -16,8 +16,7 @@ layout: default
     </p>
     <ul class="about-links">
         {% for link in site.links %}
-        <li><a href="{{ link.url }}" {% unless link.url contains 'mailto:' %}target="_blank" rel="noopener" {%
-                endunless %}>{{ link.label }}</a></li>
+        <li>{% include site-link.html link=link %}</li>
         {% endfor %}
     </ul>
 </section>

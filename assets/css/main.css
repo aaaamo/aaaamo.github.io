@@ -259,7 +259,7 @@ a:hover {
     margin-top: 0.2rem;
 }
 
-/* Dated lists: publications and experiences */
+/* Lists of publications and experiences: text on the left, place, dates, and names flush right */
 
 .entries {
     list-style: none;
@@ -267,10 +267,10 @@ a:hover {
 
 .entries li {
     display: grid;
-    grid-template-columns: 3.5rem minmax(0, 44rem);
-    column-gap: 1.5rem;
-    align-items: baseline;
-    padding: 1rem 0 1.1rem;
+    grid-template-columns: minmax(0, 1fr) auto;
+    column-gap: 2.5rem;
+    align-items: start;
+    padding: 0.9rem 0 1rem;
     border-bottom: 1px solid var(--line);
 }
 
@@ -278,57 +278,38 @@ a:hover {
     padding-top: 0;
 }
 
-.entry-when {
-    color: var(--muted);
+/* Every line has the same height so the two columns stay aligned line by line */
+.entries p {
+    line-height: 1.5rem;
+}
+
+.entry-main {
+    max-width: 46rem;
 }
 
 .entry-title {
-    font-size: 1.0625rem;
-    line-height: 1.35;
-}
-
-.entry-detail {
-    font-size: 0.875rem;
-    line-height: 1.5;
-    color: var(--muted);
-}
-
-.entry-title + .entry-detail {
-    margin-top: 0.2rem;
-}
-
-.entry-links {
-    margin-top: 0.3rem;
-}
-
-/* One line per entry: period, role and place, advisor */
-.entries-compact li {
-    grid-template-columns: 9rem minmax(0, 1fr) auto;
-    column-gap: 1.25rem;
-    padding: 0.7rem 0 0.75rem;
-}
-
-.entries-compact li:first-child {
-    padding-top: 0;
-}
-
-.entry-line {
-    line-height: 1.45;
-}
-
-.entry-role {
+    font-size: 1rem;
     font-weight: 600;
 }
 
-.entry-with {
+.entry-place {
+    color: var(--accent);
+}
+
+.entry-aside {
+    font-size: 0.875rem;
     color: var(--muted);
     text-align: right;
+    white-space: nowrap;
+}
+
+.entry-links {
+    font-size: 0.875rem;
 }
 
 .entry-links a {
     margin-right: 0.9rem;
 }
-
 /* Project page */
 
 .project-head {
@@ -600,13 +581,18 @@ figcaption {
         font-size: 1.8rem;
     }
 
-    .entries li,
-    .entries-compact li {
+    .entries li {
         grid-template-columns: 1fr;
     }
 
-    .entry-with {
+    .entry-aside {
         text-align: left;
+        white-space: normal;
+    }
+
+    .entry-aside p {
+        display: inline;
+        margin-right: 0.9rem;
     }
 }
 

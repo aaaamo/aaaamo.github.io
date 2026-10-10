@@ -52,13 +52,12 @@ layout: default
     <ol class="entries">
         {% for pub in site.data.publications %}
         <li>
-            <span class="entry-when">{{ pub.year }}</span>
-            <div>
+            <div class="entry-main">
                 <p class="entry-title">{{ pub.title }}</p>
-                <p class="entry-detail">{{ pub.authors }}</p>
-                <p class="entry-detail"><em>{{ pub.venue }}</em></p>
+                <p>{{ pub.authors }}</p>
+                <p><em>{{ pub.venue }}</em></p>
                 {% if pub.links %}
-                <p class="entry-detail entry-links">
+                <p class="entry-links">
                     {% for link in pub.links %}
                     {% if link.url contains '://' %}
                     <a href="{{ link.url }}" target="_blank" rel="noopener">{{ link.label }}</a>
@@ -69,6 +68,9 @@ layout: default
                 </p>
                 {% endif %}
             </div>
+            <div class="entry-aside">
+                <p>{{ pub.year }}</p>
+            </div>
         </li>
         {% endfor %}
     </ol>
@@ -78,14 +80,23 @@ layout: default
     <header class="section-head">
         <h2>Experiences</h2>
     </header>
-    <ol class="entries entries-compact">
+    <ol class="entries">
         {% for item in site.data.experiences %}
         <li>
-            <span class="entry-when">{{ item.period }}</span>
-            <p class="entry-line"><span class="entry-role">{{ item.role }}</span>, {{ item.place }}</p>
-            {% if item.with %}
-            <span class="entry-with">{{ item.with }}</span>
-            {% endif %}
+            <div class="entry-main">
+                <p class="entry-title">{{ item.venue }}</p>
+                <p><em>{{ item.role }}</em></p>
+                {% if item.text %}
+                <p>{{ item.text }}</p>
+                {% endif %}
+            </div>
+            <div class="entry-aside">
+                <p class="entry-place">{{ item.place }}</p>
+                <p>{{ item.period }}</p>
+                {% if item.with %}
+                <p>{{ item.with }}</p>
+                {% endif %}
+            </div>
         </li>
         {% endfor %}
     </ol>

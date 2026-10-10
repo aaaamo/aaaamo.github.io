@@ -1,26 +1,38 @@
-- period: Sep 2026 - Dec 2026
+- venue: Computational Design Laboratory, Carnegie Mellon University
+  place: Pittsburgh, PA
   role: Research Assistant
-  place: Interactive Reconstruction of Sketchpad, Carnegie Mellon University
+  period: Sep 2026 - Present
+  text: Interactive Reconstruction of Ivan Sutherland's Sketchpad, rebuilt for exhibition at the Computer History Museum.
   with: "Advisor: Daniel Cardoso Llach"
 
-- period: Summer 2026
+- venue: Lawrence Livermore National Laboratory
+  place: Livermore, CA
   role: Computing Scholar Intern
-  place: Lawrence Livermore National Laboratory
+  period: Summer 2026
+  text: Designed and built LEDGER, a tracing and review system for LLM agent sessions.
   with: "Mentor: Shusen Liu"
 
-- period: Fall 2025
+- venue: Regenerative Structures Laboratory, Carnegie Mellon University
+  place: Pittsburgh, PA
   role: Research Assistant
-  place: Regenerative Structures Laboratory, Carnegie Mellon University
+  period: Fall 2025
+  text: Developed Interactive Structures XR, an AR application for building and analyzing structures on Meta Quest 3.
   with: "Advisor: Juney Lee"
 
-- period: Jun 2024 - Aug 2025
+- venue: Joint
+  place: Seoul, South Korea
   role: Freelance Computational Designer and Co-Developer
-  place: Joint
+  period: Jun 2024 - Aug 2025
+  text: Web application that generates architectural section details from line drawings.
 
-- period: May 2021 - May 2024
+- venue: Zenerate
+  place: Seoul, South Korea
   role: Lead Computational Designer
-  place: Zenerate
+  period: May 2021 - May 2024
+  text: Led a team of four developing a cloud-based feasibility study tool for multifamily modular housing. Wrote the core algorithms and managed the database architecture.
 
-- period: 2016, 2019
+- venue: "Project: Architecture"
+  place: Seoul, South Korea
   role: Intern
-  place: "Project: Architecture"
+  period: 2016, 2019
+  text: Project manager for the Seoul Foreign School monument.
